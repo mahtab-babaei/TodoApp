@@ -11,15 +11,15 @@ class TaskBaseSchema(BaseModel):
     is_completed: bool = Field(..., description="State of the task")
 
 
-class TaskCreateSchema(BaseModel):
+class TaskCreateSchema(TaskBaseSchema):
     pass
 
 
-class TaskUpdateSchema(BaseModel):
+class TaskUpdateSchema(TaskBaseSchema):
     pass
 
 
-class TaskResponseSchema(BaseModel):
+class TaskResponseSchema(TaskBaseSchema):
     id: int = Field(..., description="Unique identifier of the task")
     created_at: datetime = Field(...,
                                  description="Creation date and time of the task")
