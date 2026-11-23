@@ -9,8 +9,8 @@ class UserModel(Base):
     __tablename__ = "users"
 
     id = Column(Integer, autoincrement=True, primary_key=True)
-    username = Column(String(250), nullable=False)
-    email = Column(String, nullable=False)
+    username = Column(String(250), nullable=False, unique=True)
+    email = Column(String(250), nullable=False, unique=True)
     password = Column(String, nullable=False)
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime, server_default=func.now())
@@ -26,3 +26,6 @@ class UserModel(Base):
     def verify_password(self, plain_password: str) -> bool:
         """Verifies the given password against the stored hash"""
         return pwd_context.verify(plain_password, self.password)
+
+    def set_password(self, plain_text: str) -> None:
+        self.password = self.hash_password(plain_text)
