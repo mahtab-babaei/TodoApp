@@ -2,7 +2,7 @@ from fastapi import FastAPI, Depends
 from contextlib import asynccontextmanager
 from tasks.routes import router as tasks_routes
 from users.routes import router as users_routes
-from auth.basic_auth import get_authenticated_user
+from auth.token_auth import get_authenticated_user
 from users.models import UserModel
 
 tags_metadata = [
@@ -45,5 +45,5 @@ def public_route():
 
 @app.get("/private")
 def private_route(user: UserModel = Depends(get_authenticated_user)):
-    print(user)
+    print(user.username)
     return {"message": "this is a private route"}

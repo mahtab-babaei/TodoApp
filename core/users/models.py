@@ -1,9 +1,10 @@
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, func
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, func, ForeignKey
 from core.database import Base
 from sqlalchemy.orm import relationship
 from passlib.context import CryptContext
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
 
 class UserModel(Base):
     __tablename__ = "users"
@@ -17,7 +18,7 @@ class UserModel(Base):
     updated_at = Column(DateTime, server_default=func.now(),
                         server_onupdate=func.now())
 
-    tasks = relationship("TaskModel",back_populates="user")
+    tasks = relationship("TaskModel", back_populates="user")
 
     def hash_password(self, plain_password: str) -> str:
         """Hashed the given password using bcrypt"""
@@ -29,3 +30,14 @@ class UserModel(Base):
 
     def set_password(self, plain_text: str) -> None:
         self.password = self.hash_password(plain_text)
+
+
+class TokenModel(Base):
+    __tablename__ = "tokens"
+
+    id = Column(Integer, autoincrement=True, primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    token = Column(String, nullable=False, unique=True)
+    created_at = Column(DateTime, server_default=func.now())
+
+    user = relationship("UserModel", uselist=False)
